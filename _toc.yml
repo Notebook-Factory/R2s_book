@@ -1,0 +1,36 @@
+- file: intro
+  title: "Introduction"
+
+- part: "Content"
+  chapters:
+  - file: 01/abstract
+
+- part: "Masks"
+  chapters:
+  - file: 03/Prescan_Mask
+    title: "Prescan Mask" 
+  - file: 03/zShim_Gc_220_Mask
+    title: "zShim_Gc_220 Mask"
+  - file: 03/zShim_Gc_split_Mask
+    title: "zShim_Gc_split Mask"
+  - file: 03/zShim_off_Mask
+    title: "zShim_off Mask" 
+
+- part: "Raw Images"
+  chapters:
+  - file: 03/Prescan_Images
+    title: "Prescan Images" 
+  - file: 03/zShim_Gc_220_Images
+    title: "zShim_Gc_220 Images"
+  - file: 03/zShim_Gc_split_Images
+    title: "zShim_Gc_split Images"
+  - file: 03/zShim_off_Images
+    title: "zShim_off Images" 
+
+- part: "External resources"
+  chapters:
+  - url: https://onlinelibrary.wiley.com/doi/full/10.1002/mrm.28468
+    title: "Published article" 
+  - url: https://github.com/neuroimaging-mug/R2s-mapping
+    title: "GitHub repository" 
+    
