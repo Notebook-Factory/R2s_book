@@ -1,5 +1,5 @@
 # Download data for gradients.ipynb notebook 
-wget -O results.zip https://osf.io/k2mp8/download/
+wget -O results.zip https://osf.io/kb2ga/download/
 unzip -j results.zip -d $HOME/03/
 
 # build jupyter-lab
