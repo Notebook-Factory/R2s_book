@@ -16,6 +16,11 @@
   - file: 03/zShim_off_Mask
     title: "zShim_off Mask" 
 
+- part: "R2 maps"
+  chapters:
+  - file: 03/Figure7
+    title: " Estimated R2 maps"
+
 - part: "Raw Images"
   chapters:
   - file: 03/Prescan_Images

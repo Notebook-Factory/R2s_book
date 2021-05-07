@@ -25,131 +25,117 @@ def load_image(path):
     layers = []
 
     for frame in range(number_of_frames):
-        for slice in range(number_of_slices):
-                layers.append(nii_data[:,:,slice,frame])
-
+        for s in range(number_of_slices):
+                layers.append(nii_data[:,:,s,frame])
+    
     return layers
 
 def mapp(list_value, range_1,range_2):
     m = interp1d(range_1,range_2)
     return m(list_value)
 
-def visualise_slices(volume, nb_frames, title,file_name):
-    r, c = volume[0].shape
+def compare_scans(scans,nb_frames,file_name):
+    newmap = np.concatenate((scans[0],scans[1],scans[2]), axis=1)
+    new_title = "Echo1\t\t\tEcho2\t\t\tEcho3"
+    
+    data = []
+    for i in range(nb_frames):
+        current = np.rot90(newmap[i],3)
+        data_c = go.Heatmap(z = current, 
+                            visible = False,
+                            xtype = "scaled", 
+                            ytype = "scaled",
+                            colorscale = "gray",
+                            showscale = False,
+                            hoverinfo = "skip"
+                            #colorbar = dict(title = dict(text = "B<sub>0</sub> (Hz)"))
+                           )
+        data.append(data_c)
+    data[0]['visible'] = True
 
-    fig = go.Figure(frames=[go.Frame(data=go.Surface(
-        z=(nb_frames/10 - k * 0.1) * np.ones((r, c)),
-        surfacecolor=np.flipud(volume[nb_frames - k]),
-        cmin=0, cmax=250
-        ),
-        name=str(k) # you need to name the frame for the animation to behave properly
+    # Create steps and slider
+    steps = []
+    for i in range(nb_frames):
+        step = dict(
+            method = 'restyle',  
+            args = ['visible', [False]*n],
+            label = str(i+1)
         )
-        for k in range(1,nb_frames)])
+        step['args'][1][i] = True # Toggle i'th trace to "visible"
+        steps.append(step)
 
-    # Add data to be displayed before animation starts
-    fig.add_trace(go.Surface(
-        z=nb_frames/10 * np.ones((r, c)),
-        surfacecolor=np.flipud(volume[nb_frames]),
-        colorscale='Gray',
-        cmin=0, cmax=250,
-        colorbar=dict(thickness=20, ticklen=4)
-        ))
+    sliders = [dict(
+        active = 0,
+        currentvalue = {'prefix':"Current slice is: <b>"},
+        pad = {"t": 50, "b": 10},
+        steps = steps
+    )]
 
-
-    def frame_args(duration):
-        return {
-                "frame": {"duration": duration},
-                "mode": "immediate",
-                "fromcurrent": True,
-                "transition": {"duration": duration, "easing": "linear"},
-            }
-
-    sliders = [
-                {
-                    "pad": {"b": 10, "t": 60},
-                    "len": 0.9,
-                    "x": 0.1,
-                    "y": 0,
-                    "steps": [
-                        {
-                            "args": [[f.name], frame_args(0)],
-                            "label": str(k),
-                            "method": "animate",
-                        }
-                        for k, f in enumerate(fig.frames)
-                    ],
-                }
-            ]
-
-    # Layout
-    fig.update_layout(
-             title=title,
-             width=600,
-             height=600,
-             scene=dict(
-                        zaxis=dict(range=[-0.1, nb_frames/10 ], autorange=False),
-                        aspectratio=dict(x=1, y=1, z=1),
-                        ),
-             updatemenus = [
-                {
-                    "buttons": [
-                        {
-                            "args": [None, frame_args(50)],
-                            "label": "&#9654;", # play symbol
-                            "method": "animate",
-                        },
-                        {
-                            "args": [[None], frame_args(0)],
-                            "label": "&#9724;", # pause symbol
-                            "method": "animate",
-                        },
-                    ],
-                    "direction": "left",
-                    "pad": {"r": 10, "t": 70},
-                    "type": "buttons",
-                    "x": 0.1,
-                    "y": 0,
-                }
-             ],
-             sliders=sliders
+    # Setup the layout of the figure
+    layout = go.Layout(
+        title = new_title, 
+        width=800,
+        height=500,
+        margin=go.layout.Margin(
+            l=50,
+            r=50,
+            b=60,
+            t=35,
+        ),
+        showlegend = False,
+        autosize = False,
+        sliders=sliders,
+        xaxis = dict(showgrid = False,
+                     showticklabels= False),
+        yaxis = dict(showgrid = False,
+                     showticklabels = False),
+        font = dict(family="Courier New, monospace",
+                    size=14),
     )
+    
+
+    # Plot function saves as html or with ipplot
+    fig = dict(data=data, layout=layout)
     plot(fig, filename = file_name, config = config)
 
-    #display(HTML('fig.html'))
+    #display(HTML('fig2.html'))
+    
 
+raw_images_path = ["data/mag_echo1_zShim_Gc_220_alpha_60deg.nii","data/mag_echo2_zShim_Gc_220_alpha_60deg.nii",
+                                  "data/mag_echo3_zShim_Gc_220_alpha_60deg.nii"]
 
-raw_images_path = ["data/mag_echo3_ref_scan.nii","data/mag_echo3_zShim_Gc_220_alpha_60deg.nii",
-                                  "data/mag_echo3_zShim_Gc_split_alpha_60deg.nii","data/mag_echo3_zShim_off_alpha_60deg.nii"]
-raw_images_titles = ["mag_echo3_ref_scan","mag_echo3_zShim_Gc_220_alpha_60deg","mag_echo3_zShim_Gc_split_alpha_60deg","mag_echo3_zShim_off_alpha_60deg"]
+n=35
 
-
-n=20
-
-raw_images_layers = []
+layers = []
 for path in raw_images_path:
-    raw_images_layers.append(load_image(path))
+    layers.append(load_image(path))
 
-# for layers in raw_images_layers:
+# for layer in layers:
 #     tmp1=[]
 #     tmp2=[]
-#     for array in layers:
+#     for array in layer:
 #         for a in array:
 #             tmp1.append(max(a))
 #             tmp2.append(min(a))
 #     print(max(tmp1))
 #     print(min(tmp2))
 
-mapp_raw_images_layers = []
-for layers in raw_images_layers[1:4]:
-    mapp_layers=[]
-    for i in range(n+1):
-        mapp_layers.append(mapp(layers[i],[0,31],[0,255]))
-    mapp_raw_images_layers.append(mapp_layers)
-
-mapp_layers=[]
+mapp_layers = []
+mapp_layer=[]
+n=n-1
 for i in range(n+1):
-     mapp_layers.append(mapp(raw_images_layers[0][i],[0,520],[0,255]))
-mapp_raw_images_layers.append(mapp_layers)
+    mapp_layer.append(mapp(layers[0][i],[0,31],[0,255]))
+mapp_layers.append(mapp_layer)
 
-visualise_slices(mapp_raw_images_layers[3], n, raw_images_titles[3],"fig34.html")
-display(HTML('fig34.html'))
+mapp_layer=[]
+for i in range(n+1):
+     mapp_layer.append(mapp(layers[1][i],[0,31],[0,255]))
+mapp_layers.append(mapp_layer)
+
+mapp_layer=[]
+for i in range(n+1):
+     mapp_layer.append(mapp(layers[2][i],[0,31],[0,255]))
+mapp_layers.append(mapp_layer)
+
+compare_scans(mapp_layers,n,"fig32.html")
+display(HTML('fig32.html'))

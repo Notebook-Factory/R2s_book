@@ -37,7 +37,7 @@ def mapp(list_value, range_1,range_2):
 
 def compare_scans(scans,titles,nb_frames,file_name):
     newmap = np.concatenate((scans[0],scans[1]), axis=1)
-    new_title = "\tScan\t\t\t\tMask"
+    new_title = "\t \t \t \t \t \t \t \t \t Scan \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t \t Mask"
     
     data = []
     for i in range(nb_frames):
@@ -47,6 +47,8 @@ def compare_scans(scans,titles,nb_frames,file_name):
                             xtype = "scaled", 
                             ytype = "scaled",
                             colorscale = "gray",
+                            showscale = False,
+                            hoverinfo = "skip",
                             name = "comparison heatmap",
                             #colorbar = dict(title = dict(text = "B<sub>0</sub> (Hz)"))
                            )
