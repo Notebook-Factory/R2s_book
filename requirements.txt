@@ -2,3 +2,5 @@ numpy == 1.18.4
 pandas == 0.25.3
 plotly == 4.10.0
 nibabel==3.2.1
+matplotlib==3.4.1
+scipy==1.6.3
