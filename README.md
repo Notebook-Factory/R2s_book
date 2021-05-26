@@ -4,7 +4,7 @@
 
 
 Paper: https://onlinelibrary.wiley.com/doi/full/10.1002/mrm.28468 <br>
-Code: https://github.com/neuroimaging‐mug/R2s‐mapping
+Code: https://github.com/neuroimaging-mug/R2s-mapping
 
 ### Adaptive slice‐specific z‐shimming for 2D spoiled gradient‐echo sequences
 *Martin Soellradl* | *Johannes Strasser* | *Andreas Lesch* | *Rudolf Stollberger* | *Stefan Ropele* | *Christian Langkammer* <br> 
